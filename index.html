@@ -4,27 +4,157 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <style>
+      .user {padding-left: 0px; font-size: small; font-style: italic; display: inline-block}
+      .timeDisplay {padding-left: 0px; font-size: small; color: gray; }
+      .tweet {padding-left: 20px;}
+      .input {width: 200px; height: 50px; padding: 0px; text-indent: 0px}
+
+</style>
   </head>
+
   <body>
+
+
+    
     <script>
 
-      $(document).ready(function(){
-        var $body = $('body');
+    var monthNames = [ "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December" ];
+
+    var convert = function(){
+      $tweet.text(tweet.message);
+      $timeDisplay.text(timeDisplay);
+      $user.text('@' + tweet.user + ': ');
+      $timeDisplay.append($user);
+      $timeDisplay.prependTo($tweet);
+
+    }
+    
+
+    var refresh = function(name){
+        var $body = $('div');
         $body.html('');
+        var current = new Date();
+        
 
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          var $tweet = $('<ol class="tweet"></ol>');
+          
+          var timeCreate = tweet.created_at;
+          var difTime = (current - timeCreate) / 1000/ 60;
+          var timeDisplay;
+
+          var $timeDisplay = $('<div class="timeDisplay"></div>');
+          var $user = $('<div class="user"></div>');
+
+          if (difTime < 60){
+            timeDisplay = ' ' + Math.floor(difTime) + ' mins ago';
+          } else if (difTime < 60 * 24) {
+            timeDisplay = ' ' + Math.floor(difTime / 60) + ' hours ago';
+          } else {
+            timeDisplay = monthNames[timeCreate.getMonth()] + timeCreate.getDate();
+          }
+
+          if (arguments.length > 0){
+            if (tweet.user == name) {
+            $tweet.text(tweet.message);
+            $timeDisplay.text(timeDisplay);
+            $user.text('@' + tweet.user + ': ');
+            $timeDisplay.append($user);
+            $timeDisplay.prependTo($tweet);
+              }
+          } 
+          else {
+            
+            $tweet.text(tweet.message);
+            $timeDisplay.text(timeDisplay);
+            $user.text('@' + tweet.user + ': ');
+            $timeDisplay.append($user);
+            $timeDisplay.prependTo($tweet);
+          }
+          
+      
+          
           $tweet.appendTo($body);
           index -= 1;
-        }
 
+        }
+        return $body;
+      }
+
+      $(document).ready(function(){
+        
+        refresh();
+        userClick();
+      
       });
 
+      $(document).ready(function(){
+        $('.refresh').on('click', function(){
+          refresh();
+          userClick();
+        
+      })})
+
+      var userClick = function(){
+        $('.user').on('click', function(){
+          //document.getElementById("body").innerHTML = "";
+          var index = streams.home.length - 1;
+        
+          var tweet = streams.home[index];
+          var user = tweet.user;
+          $(this).addClass('selected');
+          $(this).attr('id', 'newID');
+          var name = document.getElementById('newID').innerHTML;
+          name = name.slice(1, name.length - 2);
+          refresh(name);
+        
+      })
+      }
+
+      $(document).ready(function(){
+        $('.user').on('click', function(){
+          userClick();
+      })})
+
+      streams.users.felix = [];
+      //users.'name' has to be the same as visitor's;
+      var visitor = "felix";
+
+      $(document).ready(function(){
+        $('.submit').on('click', function(){
+          var textInput = $("#input").val();
+
+          writeTweet(textInput);
+          document.getElementById("input").value ="";
+          refresh();
+        
+      })})
+
+
+      
+
     </script>
-    <input class="draft" type="text" id="textInput" placeholder = "Type here"/> <button class="send">send</button>
+
+    <h2>Twittler</h2>
+    
+    <textarea placeholder="Tweet Here!" type="text" class="input" name="tweet" id="input" rows="5">
+    
+    
+    </textarea>
+
+    <button class="submit">Tweet!</button>
+    <button class="refresh">refresh</button>
+
+    <div class="body" id="body">
+    
+
+    </div>
+
+
 
   </body>
 </html>
