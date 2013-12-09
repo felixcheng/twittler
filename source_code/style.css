@@ -1,0 +1,57 @@
+
+body {
+	background-color: #CCFFFF;
+	padding: 15px;
+}
+
+.submit {
+    position:absolute;
+    transition: .5s ease;
+		top: 25%;
+		left: 3%;
+}
+
+.refresh {
+    position:absolute;
+    transition: .5s ease;
+		top: 25%;
+		left: 15%;
+}
+
+.body {
+	background-color: #CCFFFF;	
+	margin-top: 30px;
+}
+
+.user {
+	padding-left: 0px; 
+	font-size: small; 
+	font-style: italic; 
+	display: inline-block;
+	color: black;}
+
+.selected {
+	color: red;
+}
+
+
+
+.timeDisplay {
+	padding: 2px; 
+	font-size: small; 
+	color: gray; }
+
+.tweet {
+	padding-left: 20px;
+	background-color: #F0F8FF;
+	margin: 5px;
+	font-family: arial;
+}
+
+.input {
+	width: 300px;
+	height: 50px; 
+	padding: 0px;
+	text-indent: 0px;
+	margin: 5px;
+	}

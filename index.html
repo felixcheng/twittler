@@ -2,13 +2,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="jquery.js"></script>
-    <script src="data_generator.js"></script>
+
+
+    <script type="text/javascript" src="source_code/jquery.js"></script>
+    <script type="text/javascript" src="source_code/data_generator.js"></script>
+    <link rel="stylesheet" type="text/css" href="source_code/style.css">
     <style>
-      .user {padding-left: 0px; font-size: small; font-style: italic; display: inline-block}
-      .timeDisplay {padding-left: 0px; font-size: small; color: gray; }
-      .tweet {padding-left: 20px;}
-      .input {width: 200px; height: 50px; padding: 0px; text-indent: 0px}
 
 </style>
   </head>
@@ -22,22 +21,16 @@
     var monthNames = [ "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December" ];
 
-    var convert = function(){
-      $tweet.text(tweet.message);
-      $timeDisplay.text(timeDisplay);
-      $user.text('@' + tweet.user + ': ');
-      $timeDisplay.append($user);
-      $timeDisplay.prependTo($tweet);
-
-    }
-    
-
+    //set up for local user; 'name' has to be the same as visitor's;    
+    //streams.users.Harry= [];
+    var visitor;
+ 
+    //function to refresh on command (button)
     var refresh = function(name){
         var $body = $('div');
         $body.html('');
         var current = new Date();
         
-
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
@@ -48,106 +41,107 @@
           var timeDisplay;
 
           var $timeDisplay = $('<div class="timeDisplay"></div>');
-          var $user = $('<div class="user"></div>');
+          var $user = $('<div class="user" id="user"></div>');
 
+          //convert time to human-friendly style
           if (difTime < 60){
             timeDisplay = ' ' + Math.floor(difTime) + ' mins ago';
           } else if (difTime < 60 * 24) {
             timeDisplay = ' ' + Math.floor(difTime / 60) + ' hours ago';
-          } else {
+          } else { 
             timeDisplay = monthNames[timeCreate.getMonth()] + timeCreate.getDate();
           }
 
-          if (arguments.length > 0){
-            if (tweet.user == name) {
+          var convert = function(){
             $tweet.text(tweet.message);
             $timeDisplay.text(timeDisplay);
             $user.text('@' + tweet.user + ': ');
-            $timeDisplay.append($user);
-            $timeDisplay.prependTo($tweet);
-              }
-          } 
-          else {
-            
-            $tweet.text(tweet.message);
-            $timeDisplay.text(timeDisplay);
-            $user.text('@' + tweet.user + ': ');
-            $timeDisplay.append($user);
+            $timeDisplay.prepend($user);
             $timeDisplay.prependTo($tweet);
           }
-          
-      
-          
+
+          if (arguments.length > 0){ //for checking tweets of a particular user;
+            if (tweet.user == name) {
+              convert();
+              $user.addClass('selected');
+            }
+          }
+           else {    
+            convert();        
+          }
+                 
           $tweet.appendTo($body);
           index -= 1;
 
         }
-        return $body;
+        index = streams.home.length - 1;
+        document.innerHTML= $body;
       }
 
-      $(document).ready(function(){
-        
-        refresh();
-        userClick();
-      
-      });
+    //function to allow checking a particular user's tweets on command (button)
+    var userClick = function(){
+      var index = streams.home.length - 1;
+      var tweet = streams.home[index];
+      var user = tweet.user;
+      $('.user').on('click', function(){
 
-      $(document).ready(function(){
-        $('.refresh').on('click', function(){
-          refresh();
-          userClick();
+        $(this).attr('id', 'newID');
+        var name = document.getElementById('newID').innerHTML;
+        name = name.slice(1, name.length - 2);
+        refresh(name);
         
-      })})
+      })
 
-      var userClick = function(){
-        $('.user').on('click', function(){
-          //document.getElementById("body").innerHTML = "";
-          var index = streams.home.length - 1;
-        
-          var tweet = streams.home[index];
-          var user = tweet.user;
-          $(this).addClass('selected');
-          $(this).attr('id', 'newID');
-          var name = document.getElementById('newID').innerHTML;
-          name = name.slice(1, name.length - 2);
-          refresh(name);
-        
+      $('.user').on('mouseenter', function(){
+        $(this).addClass('selected');
+        $(this).on('mouseleave', function(){
+          $(this).removeClass('selected');
+        })
       })
       }
 
-      $(document).ready(function(){
-        $('.user').on('click', function(){
-          userClick();
-      })})
+    $(document).ready(function(){
 
-      streams.users.felix = [];
-      //users.'name' has to be the same as visitor's;
-      var visitor = "felix";
+      visitor = prompt("Please enter your name","Guest");
+      streams.users[visitor]= [];
 
-      $(document).ready(function(){
-        $('.submit').on('click', function(){
+      refresh();     
+      userClick();
+
+      $('.refresh').on('click', function(){
+        refresh();
+        userClick();
+
+      })
+
+
+      $('.submit').on('click', function(){
           var textInput = $("#input").val();
 
+          if (textInput == ""){
+            alert("Empty tweet is not allowed!");
+          }
+          else {
           writeTweet(textInput);
           document.getElementById("input").value ="";
           refresh();
-        
-      })})
+          userClick();
 
-
+      }
       
+      });
+    })
+
+
 
     </script>
 
     <h2>Twittler</h2>
     
-    <textarea placeholder="Tweet Here!" type="text" class="input" name="tweet" id="input" rows="5">
-    
-    
-    </textarea>
+    <textarea placeholder="Tweet Here!" type="text" class="input" name="tweet" id="input" rows="5" cols="50"></textarea>
 
     <button class="submit">Tweet!</button>
-    <button class="refresh">refresh</button>
+    <button class="refresh">Refresh</button>
 
     <div class="body" id="body">
     
