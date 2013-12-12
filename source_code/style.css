@@ -5,7 +5,7 @@ body {
 }
 
 .submit {
-    position:absolute;
+    position:relative;
     transition: .5s ease;
 		top: 25%;
 		left: 3%;

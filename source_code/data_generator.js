@@ -54,6 +54,7 @@ var scheduleNextTweet = function(){
   generateRandomTweet();
   setTimeout(scheduleNextTweet, Math.random() * 30000);
 };
+
 scheduleNextTweet();
 
 // utility function for letting students add "write a tweet" functionality

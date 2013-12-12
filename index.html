@@ -74,7 +74,7 @@
           index -= 1;
 
         }
-        index = streams.home.length - 1;
+
         document.innerHTML= $body;
       }
 
@@ -83,13 +83,12 @@
       var index = streams.home.length - 1;
       var tweet = streams.home[index];
       var user = tweet.user;
-      $('.user').on('click', function(){
 
+      $('.user').on('click', function(){
         $(this).attr('id', 'newID');
         var name = document.getElementById('newID').innerHTML;
         name = name.slice(1, name.length - 2);
-        refresh(name);
-        
+        refresh(name);        
       })
 
       $('.user').on('mouseenter', function(){
@@ -98,7 +97,7 @@
           $(this).removeClass('selected');
         })
       })
-      }
+    }
 
     $(document).ready(function(){
 
@@ -111,7 +110,6 @@
       $('.refresh').on('click', function(){
         refresh();
         userClick();
-
       })
 
 
@@ -122,13 +120,11 @@
             alert("Empty tweet is not allowed!");
           }
           else {
-          writeTweet(textInput);
-          document.getElementById("input").value ="";
-          refresh();
-          userClick();
-
-      }
-      
+            writeTweet(textInput);
+            document.getElementById("input").value ="";
+            refresh();
+            userClick();
+          }
       });
     })
 
